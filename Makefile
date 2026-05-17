@@ -1,11 +1,16 @@
 CC ?= gcc
-CFLAGS = -Wall -Wextra -std=c11 -O2
-LDFLAGS =
+CFLAGS = -Wall -Wextra -std=gnu11 -O2
 
-all: netdiag
+TARGET = netdiag
+SOURCES = src/main.c src/utils.c src/commands.c
+HEADERS = include/utils.h include/commands.h
 
-netdiag: src/main.c
-	$(CC) $(CFLAGS) src/main.c -o netdiag $(LDFLAGS)
+all: $(TARGET)
+
+$(TARGET): $(SOURCES) $(HEADERS)
+	$(CC) $(CFLAGS) $(SOURCES) -o $(TARGET)
 
 clean:
-	rm -f netdiag
+	rm -f $(TARGET)
+
+.PHONY: all run clean

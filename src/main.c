@@ -1,41 +1,52 @@
 #include "../include/commands.h"
-#include <string.h>
 
 int main(int argc, char *argv[]){
-	if (argc < 2) {
-		fprintf(stderr, "Usage: %s <comand> {args...]\n", argv[0]);
-		return 1;
-	}
+    #ifdef DEBUG
+    setLogLevel(LOG_DEBUG);
+    #else
+    setLogLevel(LOG_INFO);
+    #endif
+    
+    if (argc < 2) {
+        printUsage(argv[0]);
+        return 1;
+    }
 
-	const char *cmd = argv[1];
+    char *param = NULL;
+	Command cmd = parseCommand(argc, argv, &param);
 
-	if (strcmp(cmd, "show") == 0 && argc >= 3) {
-		const char *sub = argv[2];
-		if (strcmp(sub, "interfaces") == 0) {
-			showInterfaces();
-			return 0;
-		} else if (strcmp(sub, "routes") == 0) {
-			showRoutes();
-			return 0;
-		} else if (strcmp(sub, "vlans") == 0) {
-			showVlans();
-			return 0;
-		}
-	} else if (strcmp(cmd, "check") == 0 && argc > 3) {
-		const char *sub   = argv[2];
-		const char *value = argv[3];
-		if (strcmp(sub, "link") == 0) {
-			checkLink(value);
-			return 0;
-		} else if (strcmp(sub, "gateway") == 0){
-			checkGateway(value);
-			return 0;
-		}
-	} else if (strcmp(cmd, "collect") == 0) {
-		collectDiagnostics();
-		return 0;
-	}
+    switch (cmd) {
+        case CMD_SHOW_INTERFACES:
+            showInterfaces();
+            break;
+            
+        case CMD_SHOW_ROUTES:
+            showRoutes();
+            break;
+            
+        case CMD_SHOW_VLANS:
+            showVlans();
+            break;
+            
+        case CMD_CHECK_LINK:
+            checkLink(param);
+            break;
+            
+        case CMD_CHECK_GATEWAY:
+            checkGateway(param);
+            break;
+            
+        case CMD_COLLECT_DIAGNOSTICS:
+            collectDiagnostics();
+            break;
+            
+            
+        case CMD_UNKNOWN:			
+        default:
+            fprintf(stderr, "Error: Unknown command '%s'\n\n", argv[1]);
+            printUsage(argv[0]);
+            break;
+    }
 
-	fprintf(stderr, "Unknown command\n");
-	return 1;
+    return 0;
 }

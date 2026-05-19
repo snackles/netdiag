@@ -3,7 +3,7 @@ CFLAGS = -Wall -Wextra -std=gnu11 -O2
 
 TARGET = netdiag
 SOURCES = src/main.c src/utils.c src/commands.c
-HEADERS = include/utils.h include/commands.h
+HEADERS = include/utils.h include/constants.h include/commands.h
 
 all: $(TARGET)
 
